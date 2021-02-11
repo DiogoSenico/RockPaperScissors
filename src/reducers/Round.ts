@@ -1,22 +1,22 @@
-import { playAgainstCpu } from '../api/Round';
-import { Round, Card } from '../models';
+import { Round } from '../models';
 
-type Actions = {
-  type: 'playAgainstCpu';
-  data: {
-    playerName: string;
-    curPlay: Card;
-  };
-};
+type Actions =
+  | {
+      type: 'PLAY_WITH_CPU';
+      data: Round;
+    }
+  | {
+      type: 'FETCH_ALL';
+      data: Round[];
+    };
 
 type State = Round[];
 
 export const roundReducer = (state: State, action: Actions) => {
   switch (action.type) {
-    case 'playAgainstCpu':
-      return [
-        ...state,
-        playAgainstCpu(action.data.playerName, action.data.curPlay),
-      ];
+    case 'PLAY_WITH_CPU':
+      return [...state, action.data];
+    case 'FETCH_ALL':
+      return action.data;
   }
 };

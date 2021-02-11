@@ -9,10 +9,11 @@ import ImgPaper from '../../assets/imgs/paper.png';
 import ImgScissor from '../../assets/imgs/scissor.png';
 import ImgBackCard from '../../assets/imgs/backcard.png';
 
+// TODO: PLAYER_CARD.name should only accept the allowed card names
 const PLAYER_CARDS = [
   { name: 'Rock', img: ImgRock },
   { name: 'Paper', img: ImgPaper },
-  { name: 'Scissor', img: ImgScissor },
+  { name: 'Scissors', img: ImgScissor },
 ];
 const CPU_CARDS = [
   { name: 'Card', img: ImgBackCard },
@@ -22,15 +23,12 @@ const CPU_CARDS = [
 
 interface Props {
   playerName: string;
-  onPlay?: (playerName: string, card: MCard) => void;
+  onPlay?: (card: MCard) => void;
 }
 
 const PlayersDeck: React.FC<Props> = ({ onPlay, playerName }) => {
   var cards = !onPlay ? CPU_CARDS : PLAYER_CARDS;
 
-  const onCardClick = (card: MCard) => {
-    if (onPlay) onPlay(playerName, card);
-  };
   return (
     <Container>
       <PlayerName>{playerName}</PlayerName>
@@ -40,7 +38,7 @@ const PlayersDeck: React.FC<Props> = ({ onPlay, playerName }) => {
           key={`${card}-${i}`}
           name={card.name}
           img={card.img}
-          onClick={onPlay ? onCardClick : undefined}
+          onClick={onPlay}
         />
       ))}
     </Container>

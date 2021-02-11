@@ -15,3 +15,7 @@ export interface Round {
   topPlayer: PlayData;
   bottomPlayer: PlayData;
 }
+
+export interface Games {
+  [gameName: string]: Round[];
+}
