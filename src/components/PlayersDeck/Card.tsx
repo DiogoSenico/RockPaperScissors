@@ -1,17 +1,23 @@
 import React from 'react';
 
 import { CardWrapper, CardImg } from './styles';
+import { Card as MCard } from '../../models';
 
 interface Props {
-  alt: string;
+  name: string;
   img: string;
-  hasAction?: boolean;
+  onClick?: (card: MCard) => void;
 }
 
-const Card: React.FC<Props> = ({ alt, img, hasAction }) => {
+const Card: React.FC<Props> = ({ name, img, onClick }) => {
   return (
-    <CardWrapper hasAction={hasAction}>
-      <CardImg alt={alt} src={img} />
+    <CardWrapper
+      hasAction={!!onClick}
+      onClick={() => {
+        if (onClick) onClick(name as MCard);
+      }}
+    >
+      <CardImg alt={name} src={img} />
     </CardWrapper>
   );
 };

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Container, PlayerName } from './styles';
 import Card from './Card';
+import { Card as MCard } from '../../models';
 
 import ImgRock from '../../assets/imgs/rock.png';
 import ImgPaper from '../../assets/imgs/paper.png';
@@ -9,29 +10,38 @@ import ImgScissor from '../../assets/imgs/scissor.png';
 import ImgBackCard from '../../assets/imgs/backcard.png';
 
 const PLAYER_CARDS = [
-  { alt: 'Rock', img: ImgRock },
-  { alt: 'Paper', img: ImgPaper },
-  { alt: 'Scissor', img: ImgScissor },
+  { name: 'Rock', img: ImgRock },
+  { name: 'Paper', img: ImgPaper },
+  { name: 'Scissor', img: ImgScissor },
 ];
 const CPU_CARDS = [
-  { alt: 'Card', img: ImgBackCard },
-  { alt: 'Card', img: ImgBackCard },
-  { alt: 'Card', img: ImgBackCard },
+  { name: 'Card', img: ImgBackCard },
+  { name: 'Card', img: ImgBackCard },
+  { name: 'Card', img: ImgBackCard },
 ];
 
 interface Props {
   playerName: string;
-  isCPU?: boolean;
+  onPlay?: (playerName: string, card: MCard) => void;
 }
 
-const PlayersDeck: React.FC<Props> = ({ isCPU, playerName }) => {
-  var cards = isCPU ? CPU_CARDS : PLAYER_CARDS;
+const PlayersDeck: React.FC<Props> = ({ onPlay, playerName }) => {
+  var cards = !onPlay ? CPU_CARDS : PLAYER_CARDS;
+
+  const onCardClick = (card: MCard) => {
+    if (onPlay) onPlay(playerName, card);
+  };
   return (
     <Container>
       <PlayerName>{playerName}</PlayerName>
 
-      {cards.map((card) => (
-        <Card alt={card.alt} img={card.img} hasAction={!isCPU} />
+      {cards.map((card, i) => (
+        <Card
+          key={`${card}-${i}`}
+          name={card.name}
+          img={card.img}
+          onClick={onPlay ? onCardClick : undefined}
+        />
       ))}
     </Container>
   );

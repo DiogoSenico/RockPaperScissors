@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Round } from '../../models';
+
 import {
   Container,
   RoundWrapper,
@@ -8,19 +10,8 @@ import {
   GlobalScore,
 } from './styles';
 
-interface PlayerData {
-  name: string;
-  globalScore: number;
-  curPlay: string;
-}
-
-interface RoundData {
-  topPlayer: PlayerData;
-  bottomPlayer: PlayerData;
-}
-
 interface Props {
-  rounds?: RoundData[];
+  rounds?: Round[];
 }
 
 const RoundCollection: React.FC<Props> = ({ rounds = [] }) => {
@@ -28,10 +19,10 @@ const RoundCollection: React.FC<Props> = ({ rounds = [] }) => {
   return (
     <Container>
       {rounds.map((roundData) => (
-        <RoundWrapper>
-          <Players>{`${roundData.topPlayer.name} - ${roundData.bottomPlayer.name}`}</Players>
+        <RoundWrapper key={roundData.id}>
+          <Players>{`${roundData.topPlayer.playerName} - ${roundData.bottomPlayer.playerName}`}</Players>
           <Result>{`${roundData.topPlayer.curPlay} - ${roundData.bottomPlayer.curPlay}`}</Result>
-          <GlobalScore>{`${roundData.topPlayer.globalScore} - ${roundData.bottomPlayer.globalScore}`}</GlobalScore>
+          <GlobalScore>{`${roundData.topPlayer.roundsWon} - ${roundData.bottomPlayer.roundsWon}`}</GlobalScore>
         </RoundWrapper>
       ))}
     </Container>
