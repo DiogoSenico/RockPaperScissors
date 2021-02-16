@@ -4,13 +4,13 @@ import Game from './pages/Game';
 import Menu from './pages/Menu';
 import History from './pages/History';
 import GlobalStyles from './GlobalStyles';
-import { RoundsContextProvider } from './contexts/Rounds';
+import { DatabaseContextProvider } from './contexts/Database';
 
 const App: React.FC = () => {
   return (
     <>
       <GlobalStyles />
-      <RoundsContextProvider>
+      <DatabaseContextProvider>
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={Menu} />
@@ -18,7 +18,7 @@ const App: React.FC = () => {
             <Route exact path="/history" component={History} />
           </Switch>
         </BrowserRouter>
-      </RoundsContextProvider>
+      </DatabaseContextProvider>
     </>
   );
 };

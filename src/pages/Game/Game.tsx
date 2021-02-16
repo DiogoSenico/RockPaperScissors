@@ -1,46 +1,57 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import { Container, Title } from './styles';
 import PlayersDeck from '../../components/PlayersDeck';
 import LastRoundResult from '../../components/LastRoundResult';
 import Score from '../../components/Score';
-import { Card } from '../../models';
-import { RoundsContext } from '../../contexts/Rounds';
-import { playWithCpu } from '../../api/Round';
+import { DatabaseContext } from '../../contexts/Database';
+import { GameDocument } from '../../models/Game/types';
+import { MyDatabase } from '../../database';
+import { CardDocType } from '../../models/Card/types';
 
 const Game: React.FC = () => {
-  // TODO: context should only retrieve needed data (Only the rounds for this game)
-  const [rounds, dispatchRound] = useContext(RoundsContext);
+  const db: MyDatabase | null = useContext(DatabaseContext);
+  var [game, setGame] = useState<GameDocument | null>();
 
-  // TODO: for multiplayer games, requests players names
-  const playerName = 'Player1';
-  const cpuName = 'CPU';
-  const gameName = `${playerName}-${cpuName}`;
+  useEffect(() => {
+    if (db) {
+      db.game
+        .findOne({
+          selector: {
+            name: 'Player1-CPU',
+          },
+        })
+        .exec()
+        .then((gameDoc) => {
+          setGame(gameDoc);
+        });
+      console.log(db);
+    }
+  }, [db]);
 
-  const onPlay = (card: Card) => {
-    playWithCpu(gameName, playerName, card).then((round) => {
-      dispatchRound({
-        type: 'PLAY_WITH_CPU',
-        data: round,
-      });
-    });
-  };
+  const onPlay = useCallback((card: CardDocType) => {
+    game?.playWithCpu(card);
+  }, []);
+
+  if (!game) {
+    return <p>Loading</p>;
+  }
 
   return (
     <Container>
       <Title>Game</Title>
-      <PlayersDeck playerName={cpuName} />
+      <PlayersDeck playerName={game.players[0].info.name} />
 
       <Score
-        scoreTop={rounds[rounds.length - 1]?.topPlayer.roundsWon || 0}
-        scoreBottom={rounds[rounds.length - 1]?.bottomPlayer.roundsWon || 0}
+        scoreTop={game.players[0].score || 0}
+        scoreBottom={game.players[1].score || 0}
       />
       <LastRoundResult
-        playTop={rounds[rounds.length - 1]?.topPlayer.curPlay || '---'}
-        playBottom={rounds[rounds.length - 1]?.bottomPlayer.curPlay || '---'}
+        playTop={game.rounds[game.rounds.length - 1].cardP1.name || '---'}
+        playBottom={game.rounds[game.rounds.length - 1].cardP2.name || '---'}
       />
 
-      <PlayersDeck playerName={playerName} onPlay={onPlay} />
+      <PlayersDeck playerName={game.players[1].info.name} onPlay={onPlay} />
     </Container>
   );
 };

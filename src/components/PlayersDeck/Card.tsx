@@ -1,23 +1,22 @@
 import React from 'react';
 
 import { CardWrapper, CardImg } from './styles';
-import { Card as MCard } from '../../models';
+import { CardDocType } from '../../models/Card/types';
 
 interface Props {
-  name: string;
-  img: string;
-  onClick?: (card: MCard) => void;
+  card: CardDocType;
+  onClick?: (card: CardDocType) => void;
 }
 
-const Card: React.FC<Props> = ({ name, img, onClick }) => {
+const Card: React.FC<Props> = ({ card, onClick }) => {
   return (
     <CardWrapper
       hasAction={!!onClick}
       onClick={() => {
-        if (onClick) onClick(name as MCard);
+        if (onClick) onClick(card);
       }}
     >
-      <CardImg alt={name} src={img} />
+      <CardImg alt={card.name} src={!onClick ? card.back : card.face} />
     </CardWrapper>
   );
 };
